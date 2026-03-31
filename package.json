@@ -1,0 +1,19 @@
+{
+  "name": "newslens",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "worker",
+    "extension"
+  ],
+  "scripts": {
+    "dev:ext": "npm run dev -w extension",
+    "dev:worker": "npm run dev -w worker",
+    "build": "npm run build -w shared && npm run build -w worker && npm run build -w extension",
+    "build:ext": "npm run build -w extension",
+    "build:worker": "npm run build -w worker"
+  },
+  "devDependencies": {
+    "wrangler": "^4.78.0"
+  }
+}

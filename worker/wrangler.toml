@@ -1,0 +1,22 @@
+name = "newslens-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "development"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "newslens"
+database_id = "04aeaaf7-b17c-4fc4-beb6-16cd11e2a660"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "46d230acf1924c4e9858eb0e450b2315"
+
+[triggers]
+crons = ["*/30 * * * *", "0 23 * * *"]
+
+# 部署時需在 wrangler secret 設定以下環境變數：
+# ANTHROPIC_API_KEY = "..."
