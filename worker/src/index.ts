@@ -11,6 +11,7 @@ import {
   getRecentNewsForBriefing,
   getLatestBriefing,
   insertBriefing,
+  getExistingUrls,
 } from './db/queries.js';
 import { setToCache, buildCacheKey } from './utils/cache.js';
 
@@ -69,15 +70,26 @@ async function handleScheduled(env: Bindings): Promise<void> {
   const rawItems = await fetchAllSources();
   console.log(`Cron: 抓取到 ${rawItems.length} 則新聞`);
 
-  // 2. AI 處理
-  const processedItems = await processNewsWithAI(rawItems, env);
+  // 2. 過濾掉資料庫已有的 URL，只處理新文章
+  const existingUrls = await getExistingUrls(env.DB, rawItems.map((i) => i.url));
+  const newItems = rawItems.filter((item) => !existingUrls.has(item.url));
+  console.log(`Cron: 其中 ${newItems.length} 則為新文章（跳過 ${rawItems.length - newItems.length} 則重複）`);
+
+  if (newItems.length === 0) {
+    console.log('Cron: 無新文章，跳過 AI 處理');
+    await deleteExpiredNews(env.DB);
+    return;
+  }
+
+  // 3. AI 處理（只處理新文章）
+  const processedItems = await processNewsWithAI(newItems, env);
   console.log(`Cron: AI 處理完成 ${processedItems.length} 則`);
 
-  // 3. 存入 D1
+  // 4. 存入 D1
   await insertNewsItems(env.DB, processedItems);
   console.log('Cron: 已存入資料庫');
 
-  // 4. 清理過期新聞
+  // 5. 清理過期新聞
   await deleteExpiredNews(env.DB);
   console.log('Cron: 清理過期新聞完成');
 }

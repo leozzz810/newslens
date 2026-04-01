@@ -19,14 +19,19 @@ interface ReadingStatsState {
 
 type PersistedStats = Pick<ReadingStatsState, 'records' | 'streakDays' | 'lastReadDate'>;
 
+// 使用本地時區日期，避免 UTC 與台灣時間（UTC+8）跨日差異
+function localDateStr(d = new Date()): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 function todayStr(): string {
-  return new Date().toISOString().slice(0, 10);
+  return localDateStr();
 }
 
 function yesterdayStr(): string {
   const d = new Date();
   d.setDate(d.getDate() - 1);
-  return d.toISOString().slice(0, 10);
+  return localDateStr(d);
 }
 
 function cutoffStr(): string {

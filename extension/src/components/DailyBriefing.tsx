@@ -11,7 +11,8 @@ function escapeHtml(text: string): string {
 
 // 簡易 Markdown 轉 HTML（僅處理 ## 標題與段落）
 function renderMarkdown(md: string): string {
-  return md
+  // 將字面的 \n（AI 或 SQL 產生）統一轉為真正的換行符號
+  return md.replace(/\\n/g, '\n')
     .split('\n')
     .map((line) => {
       if (line.startsWith('## ')) return `<h3 class="font-semibold text-gray-800 dark:text-gray-200 mt-3 mb-1">${escapeHtml(line.slice(3))}</h3>`;

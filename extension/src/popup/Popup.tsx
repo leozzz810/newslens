@@ -33,29 +33,23 @@ export default function Popup() {
       </button>
 
       {/* 主題切換 */}
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-gray-600 dark:text-gray-400">深色模式</span>
-        <button
-          onClick={() => {
-            const isDark = preferences.theme === 'dark' ||
-              (preferences.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-            setPreference('theme', isDark ? 'light' : 'dark');
-          }}
-          className={`relative w-10 h-5 rounded-full transition-colors ${
-            preferences.theme === 'dark' ||
-            (preferences.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-              ? 'bg-brand-600' : 'bg-gray-300'
-          }`}
-        >
-          <span
-            className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${
-              preferences.theme === 'dark' ||
-              (preferences.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-                ? 'translate-x-5' : ''
-            }`}
-          />
-        </button>
-      </div>
+      {(() => {
+        const isDark = preferences.theme === 'dark' ||
+          (preferences.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        return (
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600 dark:text-gray-400">深色模式</span>
+            <button
+              onClick={() => setPreference('theme', isDark ? 'light' : 'dark')}
+              className={`relative w-10 h-5 rounded-full transition-colors ${isDark ? 'bg-brand-600' : 'bg-gray-300'}`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${isDark ? 'translate-x-5' : ''}`}
+              />
+            </button>
+          </div>
+        );
+      })()}
 
       {/* 設定頁連結 */}
       <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">

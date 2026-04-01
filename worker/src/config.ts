@@ -96,6 +96,48 @@ export const RSS_SOURCES: RssSource[] = [
     language: 'en',
     enabled: true,
   },
+  // 繁體中文生活
+  {
+    id: 'womany',
+    name: '女人迷 Womany',
+    url: 'https://womany.net/feed',
+    category: 'lifestyle',
+    language: 'zh-TW',
+    enabled: true,
+  },
+  {
+    id: 'ettoday_life',
+    name: 'ETtoday 生活',
+    url: 'https://www.ettoday.net/news/rss/9.xml',
+    category: 'lifestyle',
+    language: 'zh-TW',
+    enabled: true,
+  },
+  {
+    id: 'setn_life',
+    name: '三立新聞 生活',
+    url: 'https://www.setn.com/rss.aspx?PageGroupID=5',
+    category: 'lifestyle',
+    language: 'zh-TW',
+    enabled: true,
+  },
+  // 英文生活
+  {
+    id: 'lifehacker',
+    name: 'Lifehacker',
+    url: 'https://lifehacker.com/rss',
+    category: 'lifestyle',
+    language: 'en',
+    enabled: true,
+  },
+  {
+    id: 'guardian_life',
+    name: 'The Guardian Life',
+    url: 'https://www.theguardian.com/lifeandstyle/rss',
+    category: 'lifestyle',
+    language: 'en',
+    enabled: true,
+  },
 ];
 
 export const AI_BATCH_SIZE = 10;

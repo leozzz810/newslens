@@ -131,11 +131,23 @@ export default function Options() {
             {/* 資料管理 */}
             <section className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
               <h2 className="text-lg font-semibold mb-4">資料管理</h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                清除所有本地快取、書籤與閱讀紀錄，此操作無法復原。
+              </p>
               <button
-                onClick={() => chrome.storage.local.clear()}
+                onClick={() => {
+                  if (!window.confirm('確定要清除所有本地資料嗎？書籤與閱讀紀錄將一併刪除，此操作無法復原。')) return;
+                  chrome.storage.local.clear(() => {
+                    if (chrome.runtime.lastError) {
+                      alert('清除失敗：' + chrome.runtime.lastError.message);
+                    } else {
+                      alert('已清除，重新開啟新分頁後生效。');
+                    }
+                  });
+                }}
                 className="px-4 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
               >
-                清除本地快取
+                清除本地資料
               </button>
             </section>
           </div>

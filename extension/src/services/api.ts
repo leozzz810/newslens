@@ -24,12 +24,17 @@ async function fetchWithTimeout(url: string, options?: RequestInit): Promise<Res
 async function fetchWithRetry(url: string, options?: RequestInit, retries = MAX_RETRIES): Promise<Response> {
   try {
     const response = await fetchWithTimeout(url, options);
-    if (!response.ok && retries > 0) {
+    // 4xx 是用戶端錯誤，重試無意義；只對 5xx 與網路錯誤重試
+    if (response.status >= 500 && retries > 0) {
+      await new Promise((r) => setTimeout(r, 500 * (MAX_RETRIES - retries + 1)));
       return fetchWithRetry(url, options, retries - 1);
     }
     return response;
   } catch (err) {
-    if (retries > 0) return fetchWithRetry(url, options, retries - 1);
+    if (retries > 0) {
+      await new Promise((r) => setTimeout(r, 500 * (MAX_RETRIES - retries + 1)));
+      return fetchWithRetry(url, options, retries - 1);
+    }
     throw err;
   }
 }

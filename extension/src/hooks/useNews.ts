@@ -18,13 +18,10 @@ export function useNews() {
     fetchTrending: fetchTrendingFn,
   } = useNewsStore();
 
-  useEffect(() => {
-    if (items.length === 0) fetchNews();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  // activeCategory 改變時重新抓取（包含初次 mount）
   useEffect(() => {
     fetchNews();
+  // fetchNews 是 Zustand store 的穩定函數參考，不需加入依賴
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCategory]);
 

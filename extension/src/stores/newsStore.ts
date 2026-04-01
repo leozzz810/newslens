@@ -65,7 +65,8 @@ export const useNewsStore = create<NewsState>()(
               isBookmarked: prevBookmarked.has(item.id),
               isRead: prevRead.has(item.id),
             })),
-            cachedAt: data.cachedAt,
+            // 用現在時間記錄「Extension 最後更新時間」，而非 Worker 快取建立時間
+            cachedAt: new Date().toISOString(),
             isLoading: false,
           });
         } catch (err) {

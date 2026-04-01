@@ -211,10 +211,11 @@ function rowToBriefing(row: BriefingRow): DailyBriefing {
 }
 
 export async function getLatestBriefing(db: D1Database): Promise<DailyBriefing | null> {
-  const today = new Date().toISOString().slice(0, 10);
+  // 取最近 2 天內最新的一筆，避免 UTC/台灣時區差異導致跨日查不到
+  const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
   const row = await db
-    .prepare(`SELECT * FROM daily_briefings WHERE date = ? LIMIT 1`)
-    .bind(today)
+    .prepare(`SELECT * FROM daily_briefings WHERE date >= ? ORDER BY date DESC LIMIT 1`)
+    .bind(twoDaysAgo)
     .first<BriefingRow>();
   return row ? rowToBriefing(row) : null;
 }
@@ -239,6 +240,16 @@ export async function insertBriefing(
       briefing.generatedAt
     )
     .run();
+}
+
+export async function getExistingUrls(db: D1Database, urls: string[]): Promise<Set<string>> {
+  if (urls.length === 0) return new Set();
+  const placeholders = urls.map(() => '?').join(',');
+  const result = await db
+    .prepare(`SELECT url FROM news_items WHERE url IN (${placeholders})`)
+    .bind(...urls)
+    .all<{ url: string }>();
+  return new Set(result.results.map((r) => r.url));
 }
 
 export async function getRecentNewsForBriefing(db: D1Database): Promise<NewsItem[]> {
